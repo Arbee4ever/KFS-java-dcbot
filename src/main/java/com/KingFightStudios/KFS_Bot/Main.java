@@ -59,11 +59,12 @@ public class Main {
         controlsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         console.setEditable(false);
-        console.setLineWrap(true);
+        console.setLineWrap(false);
         console.setFont(new Font("Consolas", Font.PLAIN, 14));
         JScrollPane consolePanel = new JScrollPane(console);
         consolePanel.setBorder(new TitledBorder("Console"));
         consolePanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        consolePanel.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         membersHolder = new JPanel();
         membersPanel = new JScrollPane(membersHolder);
         membersPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);

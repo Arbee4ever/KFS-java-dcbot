@@ -26,11 +26,9 @@ public class Bot extends ListenerAdapter {
     public static void main(String[] args) throws Exception{
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalTime now = LocalTime.now();
-        final JDA bot = JDABuilder.createLight("NTMwODI4MzcwNzgzNzY0NTAy.XC-ycQ.kWd2kU6o4an9KQIvJ4l8cs24vwA", Collections.emptyList())
+        final JDA bot = JDABuilder.createLight("TOKEN", Collections.emptyList())
                 .addEventListeners(new Bot())
                 .setActivity(Activity.playing("seit " + dtf.format(now) + " Uhr"))
-                .setChunkingFilter(ChunkingFilter.ALL)
-                .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .enableIntents(GatewayIntent.GUILD_MEMBERS)
                 .build()
                 .awaitReady();
@@ -118,9 +116,9 @@ public class Bot extends ListenerAdapter {
 
     @Override
     public void onReady(ReadyEvent event) {
-        event.getJDA().getGuildById("705831662734540850").loadMembers();
-        List<Member> members = event.getJDA().getGuildById("705831662734540850").getMembers();
-        Main.members(members);
+        event.getJDA().getGuildById("705831662734540850").loadMembers().onSuccess(members -> {
+            Main.members(members);
+        });
     }
 
     @Override
