@@ -64,7 +64,6 @@ public class Gui extends JFrame {
         consolePanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         consolePanel.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         membersHolder = new JPanel();
-        membersHolder.add(new JComboBox<>());
         membersPanel = new JScrollPane(membersHolder);
         membersPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -108,10 +107,10 @@ public class Gui extends JFrame {
         String[] memberInfo = new String[m.size()];
         for(int i = 0; i < m.size(); i++) {
             memberInfo[i] = m.get(i).getUser().getName();
-            JLabel member = new JLabel(memberInfo[i]);
-            membersHolder.add(member);
-            membersHolder.revalidate();
         }
+        JComboBox<String> member = new JComboBox<>(memberInfo);
+        membersHolder.add(member);
+        membersHolder.revalidate();
     }
 
     public Process secondJVM() throws Exception {
