@@ -110,11 +110,10 @@ public class Gui extends JFrame {
 
     public void members(java.util.List<Member> m) {
         membersPanel = new JScrollPane(membersHolder);
-        String memberInfo[] = new String[m.size()];
+        String[] memberInfo = new String[m.size()];
         for(int i = 0; i < m.size(); i++) {
             memberInfo[i] = m.get(i).getUser().getName();
         }
-        membersHolder.add(new JTextArea("test"));
         JComboBox<String> member = new JComboBox<>(memberInfo);
         membersHolder.add(member);
         membersPanel.revalidate();
