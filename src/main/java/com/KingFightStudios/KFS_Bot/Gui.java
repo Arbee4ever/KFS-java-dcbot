@@ -46,6 +46,11 @@ public class Gui extends JFrame {
             }
         }
     };
+
+    public Gui() {
+        super("KFS-Bot");
+    }
+
     private final Timer tick = new Timer(0, tickEvent);
     public void init() throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -104,16 +109,19 @@ public class Gui extends JFrame {
     }
 
     public void members(java.util.List<Member> m) {
-        String[] memberInfo = new String[m.size()];
+        membersPanel = new JScrollPane(membersHolder);
+        String memberInfo[] = new String[m.size()];
         for(int i = 0; i < m.size(); i++) {
             memberInfo[i] = m.get(i).getUser().getName();
         }
+        membersHolder.add(new JTextArea("test"));
         JComboBox<String> member = new JComboBox<>(memberInfo);
         membersHolder.add(member);
-        membersHolder.revalidate();
+        membersPanel.revalidate();
+        membersPanel.repaint();
     }
 
-    public Process secondJVM() throws Exception {
+    public void secondJVM() throws Exception {
         tick.start();
         String separator = System.getProperty("file.separator");
         String classpath = System.getProperty("java.class.path");
@@ -128,6 +136,5 @@ public class Gui extends JFrame {
         assert pb.redirectInput() == ProcessBuilder.Redirect.PIPE;
         assert pb.redirectOutput().file() == file;
         assert process.getInputStream().read() == -1;
-        return process;
     }
 }

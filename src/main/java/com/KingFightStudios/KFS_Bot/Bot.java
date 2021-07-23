@@ -24,7 +24,7 @@ public class Bot extends ListenerAdapter {
     public static void main(String[] args) throws Exception{
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalTime now = LocalTime.now();
-        final JDA bot = JDABuilder.createLight("TOKEN", Collections.emptyList())
+        final JDA bot = JDABuilder.createLight("NTMwODI4MzcwNzgzNzY0NTAy.XC-ycQ.P5IC6L05lUZHMV6aHxfx0smM5yc", Collections.emptyList())
                 .addEventListeners(new Bot())
                 .setActivity(Activity.playing("seit " + dtf.format(now) + " Uhr"))
                 .enableIntents(GatewayIntent.GUILD_MEMBERS)
