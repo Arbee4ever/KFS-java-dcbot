@@ -11,15 +11,15 @@ public class WindowControls implements WindowListener {
 
     @Override
     public void windowClosing(WindowEvent e) {
-        if(Main.process != null) {
-            Main.process.destroyForcibly();
+        if(Main.gui.process != null) {
+            Main.gui.process.destroyForcibly();
         }
     }
 
     @Override
     public void windowClosed(WindowEvent e) {
-        if(Main.process != null) {
-            Main.process.destroyForcibly();
+        if(Main.gui.process != null) {
+            Main.gui.process.destroyForcibly();
         }
     }
 

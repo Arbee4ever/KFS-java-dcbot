@@ -11,8 +11,6 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.api.utils.ChunkingFilter;
-import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
@@ -117,14 +115,14 @@ public class Bot extends ListenerAdapter {
     @Override
     public void onReady(ReadyEvent event) {
         event.getJDA().getGuildById("705831662734540850").loadMembers().onSuccess(members -> {
-            Main.members(members);
+            Main.gui.members(members);
         });
     }
 
     @Override
     public void onGenericUser(GenericUserEvent event) {
-        event.getJDA().getGuildById("705831662734540850").loadMembers();
-        List<Member> members = event.getJDA().getGuildById("705831662734540850").getMembers();
-        Main.members(members);
+        event.getJDA().getGuildById("705831662734540850").loadMembers().onSuccess(members -> {
+            Main.gui.members(members);
+        });
     }
 }
