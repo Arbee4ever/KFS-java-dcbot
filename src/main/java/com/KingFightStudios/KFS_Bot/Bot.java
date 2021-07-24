@@ -24,7 +24,7 @@ public class Bot extends ListenerAdapter {
     public static void main(String[] args) throws Exception{
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalTime now = LocalTime.now();
-        final JDA bot = JDABuilder.createLight("NTMwODI4MzcwNzgzNzY0NTAy.XC-ycQ.P5IC6L05lUZHMV6aHxfx0smM5yc", Collections.emptyList())
+        final JDA bot = JDABuilder.createLight("TOKEN", Collections.emptyList())
                 .addEventListeners(new Bot())
                 .setActivity(Activity.playing("seit " + dtf.format(now) + " Uhr"))
                 .enableIntents(GatewayIntent.GUILD_MEMBERS)
@@ -35,7 +35,7 @@ public class Bot extends ListenerAdapter {
         System.out.println("|                                                   |");
         System.out.println("|              Started Bot as KFS#3110              |");
         System.out.println("|                   In Development                  |");
-        System.out.println("|                    Version: 1.0                   |");
+        System.out.println("|                    Version: 2.0                   |");
         System.out.println("|             Creator: KingFightStudios             |");
         System.out.println("|                   Zeit: "+dtf.format(now)+"                  |");
         System.out.println("|                                                   |");
