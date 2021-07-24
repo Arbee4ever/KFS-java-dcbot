@@ -15,15 +15,14 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 
 public class Gui extends JFrame {
-    private final JFrame window = new JFrame("KFS-Bot");
-    private final Image image = window.getToolkit().getImage("src/main/resources/icon.png");
-    private final Image bot_on = window.getToolkit().getImage("src/main/resources/bot_on.png");
-    private final Image bot_off = window.getToolkit().getImage("src/main/resources/bot_off.png");
+    private final Image image = getToolkit().getImage("src/main/resources/icon.png");
+    private final Image bot_on = getToolkit().getImage("src/main/resources/bot_on.png");
+    private final Image bot_off = getToolkit().getImage("src/main/resources/bot_off.png");
     private final JTextArea console = new JTextArea();
     private final JCheckBox power = new JCheckBox();
     private final JTextPane time = new JTextPane();
     private final JPanel mainPanel = new JPanel();
-    public JPanel membersHolder = new JPanel();
+    public JPanel membersHolder;
     private JScrollPane membersPanel;
     private final JPanel leftPanel = new JPanel();
     private final JPanel controlsPanel = new JPanel();
@@ -93,6 +92,9 @@ public class Gui extends JFrame {
         time.setBackground(new Color(0xFFEEEEEE));
         controlsPanel.add(power);
         controlsPanel.add(time);
+        membersHolder.add(new JComboBox<>(new String[]{
+                "test1", "test2"
+        }));
         leftPanel.add(controlsPanel);
         leftPanel.add(membersPanel);
         mainPanel.add(leftPanel);
@@ -109,15 +111,15 @@ public class Gui extends JFrame {
     }
 
     public void members(java.util.List<Member> m) {
-        membersPanel = new JScrollPane(membersHolder);
         String[] memberInfo = new String[m.size()];
         for(int i = 0; i < m.size(); i++) {
             memberInfo[i] = m.get(i).getUser().getName();
         }
         JComboBox<String> member = new JComboBox<>(memberInfo);
         membersHolder.add(member);
-        membersPanel.revalidate();
-        membersPanel.repaint();
+        revalidate();
+        repaint();
+        pack();
     }
 
     public void secondJVM() throws Exception {
@@ -132,8 +134,5 @@ public class Gui extends JFrame {
         pb.redirectErrorStream(true);
         pb.redirectOutput(file);
         process = pb.start();
-        assert pb.redirectInput() == ProcessBuilder.Redirect.PIPE;
-        assert pb.redirectOutput().file() == file;
-        assert process.getInputStream().read() == -1;
     }
 }
