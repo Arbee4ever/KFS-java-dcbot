@@ -22,7 +22,7 @@ public class Gui extends JFrame {
     private final JCheckBox power = new JCheckBox();
     private final JTextPane time = new JTextPane();
     private final JPanel mainPanel = new JPanel();
-    public JPanel membersHolder;
+    private JPanel membersHolder;
     private JScrollPane membersPanel;
     private final JPanel leftPanel = new JPanel();
     private final JPanel controlsPanel = new JPanel();
@@ -45,12 +45,12 @@ public class Gui extends JFrame {
             }
         }
     };
+    private final Timer tick = new Timer(0, tickEvent);
 
     public Gui() {
         super("KFS-Bot");
     }
 
-    private final Timer tick = new Timer(0, tickEvent);
     public void init() throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
@@ -92,9 +92,6 @@ public class Gui extends JFrame {
         time.setBackground(new Color(0xFFEEEEEE));
         controlsPanel.add(power);
         controlsPanel.add(time);
-        membersHolder.add(new JComboBox<>(new String[]{
-                "test1", "test2"
-        }));
         leftPanel.add(controlsPanel);
         leftPanel.add(membersPanel);
         mainPanel.add(leftPanel);
@@ -114,12 +111,10 @@ public class Gui extends JFrame {
         String[] memberInfo = new String[m.size()];
         for(int i = 0; i < m.size(); i++) {
             memberInfo[i] = m.get(i).getUser().getName();
+            System.out.println(memberInfo[i]);
         }
         JComboBox<String> member = new JComboBox<>(memberInfo);
         membersHolder.add(member);
-        revalidate();
-        repaint();
-        pack();
     }
 
     public void secondJVM() throws Exception {
