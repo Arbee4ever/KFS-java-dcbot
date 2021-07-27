@@ -41,23 +41,26 @@ public class Gui extends JFrame {
         controlsPanel = new JPanel();
         membersHolder = new JPanel();
         membersPanel = new JScrollPane(membersHolder);
-        tickEvent = evt -> {
-            if(process != null) {
-                try {
-                    if(!console.getText().equals(Files.readString(file.toPath()))) {
-                        console.setText(Files.readString(file.toPath()));
+        tickEvent = evt -> SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                if(process != null) {
+                    try {
+                        if(!console.getText().equals(Files.readString(file.toPath()))) {
+                            console.setText(Files.readString(file.toPath()));
+                        }
+                        if(process != null) {
+                            int startTimeOfDay = process.info().startInstant().get().atZone(ZoneId.of("+2")).toLocalTime().toSecondOfDay();
+                            int nowTimeOfDay = LocalTime.now().toSecondOfDay();
+                            int uptime = nowTimeOfDay - startTimeOfDay;
+                            time.setText("Uptime:\r" + LocalTime.ofSecondOfDay(uptime));
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    if(process != null) {
-                        int startTimeOfDay = process.info().startInstant().get().atZone(ZoneId.of("+2")).toLocalTime().toSecondOfDay();
-                        int nowTimeOfDay = LocalTime.now().toSecondOfDay();
-                        int uptime = nowTimeOfDay - startTimeOfDay;
-                        time.setText("Uptime:\r" + LocalTime.ofSecondOfDay(uptime));
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
             }
-        };
+        });
         tick = new Timer(0, tickEvent);
     }
 
@@ -119,7 +122,7 @@ public class Gui extends JFrame {
         String[] memberInfo = new String[m.size()];
         for(int i = 0; i < m.size(); i++) {
             memberInfo[i] = m.get(i).getUser().getName();
-            System.out.println(memberInfo[i]);
+            System.out.println(memberInfo[i] + Thread.currentThread());
         }
         JComboBox<String> member = new JComboBox<>(memberInfo);
         membersHolder.add(member);
