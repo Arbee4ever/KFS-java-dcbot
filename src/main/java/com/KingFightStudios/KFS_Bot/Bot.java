@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
+import javax.swing.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.time.LocalTime;
@@ -115,7 +116,12 @@ public class Bot extends ListenerAdapter {
     @Override
     public void onReady(ReadyEvent event) {
         event.getJDA().getGuildById("705831662734540850").loadMembers().onSuccess(members -> {
-                Main.gui.members(members);
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    Main.gui.members(members);
+                }
+            });
         });
     }
 
