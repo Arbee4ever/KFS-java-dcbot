@@ -115,22 +115,14 @@ public class Bot extends ListenerAdapter {
     @Override
     public void onReady(ReadyEvent event) {
         event.getJDA().getGuildById("705831662734540850").loadMembers().onSuccess(members -> {
-            try {
                 Main.gui.members(members);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
         });
     }
 
     @Override
     public void onGenericUser(GenericUserEvent event) {
         event.getJDA().getGuildById("705831662734540850").loadMembers().onSuccess(members -> {
-            try {
-                Main.gui.members(members);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
+            Main.gui.members(members);
         });
     }
 }
