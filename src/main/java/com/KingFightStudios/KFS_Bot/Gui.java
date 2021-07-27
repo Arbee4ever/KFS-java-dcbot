@@ -85,19 +85,35 @@ public class Gui extends JFrame {
         power.setSelected(false);
         power.setIcon(new ImageIcon(bot_off));
         power.setSelectedIcon(new ImageIcon(bot_on));
-        power.addActionListener(e -> {
-            if (power.isSelected()) {
-                try {
-                    secondJVM();
-                } catch (Exception exception) {
-                    exception.printStackTrace();
+        power.addActionListener(e -> SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                if(power.isSelected())
+
+                {
+                    try {
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    secondJVM();
+                                } catch (Exception exception) {
+                                    exception.printStackTrace();
+                                }
+                            }
+                        });
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                } else
+
+                {
+                    process.destroyForcibly();
+                    tick.stop();
+                    console.append("Bot successfully stopped!");
                 }
-            } else {
-                process.destroyForcibly();
-                tick.stop();
-                console.append("Bot successfully stopped!");
             }
-        });
+        }));
 
         time.setText("Uptime:\r00:00:00");
         time.setBackground(new Color(0xFFEEEEEE));
