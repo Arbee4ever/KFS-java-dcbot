@@ -18,37 +18,47 @@ public class Gui extends JFrame {
     private final Image image = getToolkit().getImage("src/main/resources/icon.png");
     private final Image bot_on = getToolkit().getImage("src/main/resources/bot_on.png");
     private final Image bot_off = getToolkit().getImage("src/main/resources/bot_off.png");
-    private final JTextArea console = new JTextArea();
-    private final JCheckBox power = new JCheckBox();
-    private final JTextPane time = new JTextPane();
-    private final JPanel mainPanel = new JPanel();
+    private JTextArea console;
+    private JCheckBox power;
+    private JTextPane time;
+    private JPanel mainPanel;
     private JPanel membersHolder;
     private JScrollPane membersPanel;
-    private final JPanel leftPanel = new JPanel();
-    private final JPanel controlsPanel = new JPanel();
+    private JPanel leftPanel;
+    private JPanel controlsPanel;
     private File file;
     public Process process;
-    private final ActionListener tickEvent = evt -> {
-        if(process != null) {
-            try {
-                if(!console.getText().equals(Files.readString(file.toPath()))) {
-                    console.setText(Files.readString(file.toPath()));
-                }
-                if(process != null) {
-                    int startTimeOfDay = process.info().startInstant().get().atZone(ZoneId.of("+2")).toLocalTime().toSecondOfDay();
-                    int nowTimeOfDay = LocalTime.now().toSecondOfDay();
-                    int uptime = nowTimeOfDay - startTimeOfDay;
-                    time.setText("Uptime:\r" + LocalTime.ofSecondOfDay(uptime));
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    };
-    private final Timer tick = new Timer(0, tickEvent);
+    private ActionListener tickEvent;
+    private Timer tick;
 
     public Gui() {
         super("KFS-Bot");
+        console = new JTextArea();
+        power = new JCheckBox();
+        time = new JTextPane();
+        mainPanel = new JPanel();
+        leftPanel = new JPanel();
+        controlsPanel = new JPanel();
+        membersHolder = new JPanel();
+        membersPanel = new JScrollPane(membersHolder);
+        tickEvent = evt -> {
+            if(process != null) {
+                try {
+                    if(!console.getText().equals(Files.readString(file.toPath()))) {
+                        console.setText(Files.readString(file.toPath()));
+                    }
+                    if(process != null) {
+                        int startTimeOfDay = process.info().startInstant().get().atZone(ZoneId.of("+2")).toLocalTime().toSecondOfDay();
+                        int nowTimeOfDay = LocalTime.now().toSecondOfDay();
+                        int uptime = nowTimeOfDay - startTimeOfDay;
+                        time.setText("Uptime:\r" + LocalTime.ofSecondOfDay(uptime));
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        tick = new Timer(0, tickEvent);
     }
 
     public void init() throws Exception {
@@ -67,8 +77,6 @@ public class Gui extends JFrame {
         consolePanel.setBorder(new TitledBorder("Console"));
         consolePanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         consolePanel.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        membersHolder = new JPanel();
-        membersPanel = new JScrollPane(membersHolder);
         membersPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         power.setSelected(false);
