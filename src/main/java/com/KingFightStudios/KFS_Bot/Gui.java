@@ -41,26 +41,23 @@ public class Gui extends JFrame {
         controlsPanel = new JPanel();
         membersHolder = new JPanel();
         membersPanel = new JScrollPane(membersHolder);
-        tickEvent = evt -> SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                if(process != null) {
-                    try {
-                        if(!console.getText().equals(Files.readString(file.toPath()))) {
-                            console.setText(Files.readString(file.toPath()));
-                        }
-                        if(process != null) {
-                            int startTimeOfDay = process.info().startInstant().get().atZone(ZoneId.of("+2")).toLocalTime().toSecondOfDay();
-                            int nowTimeOfDay = LocalTime.now().toSecondOfDay();
-                            int uptime = nowTimeOfDay - startTimeOfDay;
-                            time.setText("Uptime:\r" + LocalTime.ofSecondOfDay(uptime));
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
+        tickEvent = evt -> {
+            if(process != null) {
+                try {
+                    if(!console.getText().equals(Files.readString(file.toPath()))) {
+                        console.setText(Files.readString(file.toPath()));
                     }
+                    if(process != null) {
+                        int startTimeOfDay = process.info().startInstant().get().atZone(ZoneId.of("+2")).toLocalTime().toSecondOfDay();
+                        int nowTimeOfDay = LocalTime.now().toSecondOfDay();
+                        int uptime = nowTimeOfDay - startTimeOfDay;
+                        time.setText("Uptime:\r" + LocalTime.ofSecondOfDay(uptime));
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-        });
+        };
         tick = new Timer(0, tickEvent);
     }
 
@@ -85,35 +82,19 @@ public class Gui extends JFrame {
         power.setSelected(false);
         power.setIcon(new ImageIcon(bot_off));
         power.setSelectedIcon(new ImageIcon(bot_on));
-        power.addActionListener(e -> SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                if(power.isSelected())
-
-                {
-                    try {
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    secondJVM();
-                                } catch (Exception exception) {
-                                    exception.printStackTrace();
-                                }
-                            }
-                        });
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
-                    }
-                } else
-
-                {
-                    process.destroyForcibly();
-                    tick.stop();
-                    console.append("Bot successfully stopped!");
+        power.addActionListener(e -> {
+            if (power.isSelected()) {
+                try {
+                    secondJVM();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
                 }
+            } else {
+                process.destroyForcibly();
+                tick.stop();
+                console.append("Bot successfully stopped!");
             }
-        }));
+        });
 
         time.setText("Uptime:\r00:00:00");
         time.setBackground(new Color(0xFFEEEEEE));
@@ -138,7 +119,7 @@ public class Gui extends JFrame {
         String[] memberInfo = new String[m.size()];
         for(int i = 0; i < m.size(); i++) {
             memberInfo[i] = m.get(i).getUser().getName();
-            System.out.println(memberInfo[i] + Thread.currentThread());
+            System.out.println(memberInfo[i]);
         }
         JComboBox<String> member = new JComboBox<>(memberInfo);
         membersHolder.add(member);
