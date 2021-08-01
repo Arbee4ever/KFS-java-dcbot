@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.concurrent.CompletableFuture;
 
 public class Gui extends JFrame {
     private final Image image = getToolkit().getImage("src/main/resources/icon.png");
@@ -29,6 +30,7 @@ public class Gui extends JFrame {
     public Process process;
     private ActionListener tickEvent;
     private Timer tick;
+    private Thread bot;
 
     public Gui() {
         super("KFS-Bot");
@@ -89,7 +91,7 @@ public class Gui extends JFrame {
                     exception.printStackTrace();
                 }
             } else {
-                process.destroyForcibly();
+                bot.interrupt();
                 tick.stop();
                 console.append("Bot successfully stopped!");
             }
@@ -130,7 +132,13 @@ public class Gui extends JFrame {
         PrintStream out = new PrintStream(new FileOutputStream(file));
         System.setErr(out);
         System.setOut(out);
-
-        Bot.init();
+        bot = new Thread(() -> {
+            try {
+                Bot.init();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        bot.start();
     }
 }
