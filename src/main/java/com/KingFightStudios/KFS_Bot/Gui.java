@@ -7,8 +7,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowListener;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -26,7 +25,7 @@ public class Gui extends JFrame {
     private JScrollPane membersPanel;
     private JPanel leftPanel;
     private JPanel controlsPanel;
-    private File file;
+    private static File file;
     public Process process;
     private ActionListener tickEvent;
     private Timer tick;
@@ -119,7 +118,7 @@ public class Gui extends JFrame {
         String[] memberInfo = new String[m.size()];
         for(int i = 0; i < m.size(); i++) {
             memberInfo[i] = m.get(i).getUser().getName();
-            System.out.println(memberInfo[i]);
+            System.out.println(memberInfo[i] + Thread.currentThread() );
         }
         JComboBox<String> member = new JComboBox<>(memberInfo);
         membersHolder.add(member);
@@ -127,15 +126,11 @@ public class Gui extends JFrame {
 
     public void secondJVM() throws Exception {
         tick.start();
-        String separator = System.getProperty("file.separator");
-        String classpath = System.getProperty("java.class.path");
-        String path = System.getProperty("java.home") + separator + "bin" + separator + "java";
-
         file = new File("logs/" + LocalDate.now() + "_" + LocalTime.ofSecondOfDay(LocalTime.now().toSecondOfDay()).toString().replace(":", "-") + ".log");
+        PrintStream out = new PrintStream(new FileOutputStream(file));
+        System.setErr(out);
+        System.setOut(out);
 
-        ProcessBuilder pb = new ProcessBuilder(path, "-cp", classpath, Bot.class.getName());
-        pb.redirectErrorStream(true);
-        pb.redirectOutput(file);
-        process = pb.start();
+        Bot.init();
     }
 }

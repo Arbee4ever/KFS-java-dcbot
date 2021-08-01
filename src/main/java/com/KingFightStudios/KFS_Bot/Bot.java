@@ -2,7 +2,10 @@ package com.KingFightStudios.KFS_Bot;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.user.GenericUserEvent;
@@ -22,7 +25,7 @@ import java.util.List;
 
 public class Bot extends ListenerAdapter {
     public static final RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
-    public static void main(String[] args) throws Exception{
+    public static void init() throws Exception{
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalTime now = LocalTime.now();
         final JDA bot = JDABuilder.createLight("TOKEN", Collections.emptyList())
