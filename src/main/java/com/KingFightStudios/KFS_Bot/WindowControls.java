@@ -11,15 +11,15 @@ public class WindowControls implements WindowListener {
 
     @Override
     public void windowClosing(WindowEvent e) {
-        if(Main.gui.process != null) {
-            Main.gui.process.destroyForcibly();
+        if(Bot.bot != null) {
+            Gui.botclass.shutdown();
         }
     }
 
     @Override
     public void windowClosed(WindowEvent e) {
-        if(Main.gui.process != null) {
-            Main.gui.process.destroyForcibly();
+        if(Bot.bot != null) {
+            Gui.botclass.shutdown();
         }
     }
 
