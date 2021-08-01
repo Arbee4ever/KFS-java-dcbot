@@ -27,10 +27,10 @@ public class Gui extends JFrame {
     private JPanel leftPanel;
     private JPanel controlsPanel;
     private static File file;
-    public Process process;
     private ActionListener tickEvent;
     private Timer tick;
     private Thread bot;
+    public static Bot botclass;
 
     public Gui() {
         super("KFS-Bot");
@@ -43,17 +43,16 @@ public class Gui extends JFrame {
         membersHolder = new JPanel();
         membersPanel = new JScrollPane(membersHolder);
         tickEvent = evt -> {
-            if(process != null) {
+            if(botclass != null) {
                 try {
                     if(!console.getText().equals(Files.readString(file.toPath()))) {
                         console.setText(Files.readString(file.toPath()));
                     }
-                    if(process != null) {
-                        int startTimeOfDay = process.info().startInstant().get().atZone(ZoneId.of("+2")).toLocalTime().toSecondOfDay();
-                        int nowTimeOfDay = LocalTime.now().toSecondOfDay();
-                        int uptime = nowTimeOfDay - startTimeOfDay;
-                        time.setText("Uptime:\r" + LocalTime.ofSecondOfDay(uptime));
-                    }
+                    long uptimeInSeconds = botclass.getUptime() / 1000;
+                    long numberOfHours = uptimeInSeconds / (60 * 60);
+                    long numberOfMinutes = (uptimeInSeconds / 60) - (numberOfHours * 60);
+                    long numberOfSeconds = uptimeInSeconds % 60;
+                    time.setText(String.format("Uptime:\n%s:%s:%s", numberOfHours, numberOfMinutes, numberOfSeconds));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -86,12 +85,14 @@ public class Gui extends JFrame {
         power.addActionListener(e -> {
             if (power.isSelected()) {
                 try {
-                    secondJVM();
+                    startBot();
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
             } else {
-                bot.interrupt();
+                if(Bot.bot != null) {
+                    botclass.shutdown();
+                }
                 tick.stop();
                 console.append("Bot successfully stopped!");
             }
@@ -117,16 +118,18 @@ public class Gui extends JFrame {
     }
 
     public void members(java.util.List<Member> m) {
-        String[] memberInfo = new String[m.size()];
-        for(int i = 0; i < m.size(); i++) {
-            memberInfo[i] = m.get(i).getUser().getName();
-            System.out.println(memberInfo[i] + Thread.currentThread() );
+        membersHolder.removeAll();
+        for(int i = 0; i < 2; i++) {
+            String[] memberInfo = new String[m.size()];
+            memberInfo[0] = m.get(i).getUser().getName();
+            memberInfo[1] = m.get(i).getUser().getId();
+            memberInfo[2] = m.get(i).getUser().AVATAR_URL;
+            JComboBox<String> member = new JComboBox<>(memberInfo);
+            membersHolder.add(member);
         }
-        JComboBox<String> member = new JComboBox<>(memberInfo);
-        membersHolder.add(member);
     }
 
-    public void secondJVM() throws Exception {
+    public void startBot() throws Exception {
         tick.start();
         file = new File("logs/" + LocalDate.now() + "_" + LocalTime.ofSecondOfDay(LocalTime.now().toSecondOfDay()).toString().replace(":", "-") + ".log");
         PrintStream out = new PrintStream(new FileOutputStream(file));
@@ -134,7 +137,8 @@ public class Gui extends JFrame {
         System.setOut(out);
         bot = new Thread(() -> {
             try {
-                Bot.init();
+                botclass = new Bot();
+                botclass.init();
             } catch (Exception e) {
                 e.printStackTrace();
             }

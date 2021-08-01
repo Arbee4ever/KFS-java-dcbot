@@ -16,19 +16,24 @@ import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import javax.swing.*;
+import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 
 public class Bot extends ListenerAdapter {
+    public static JDA bot;
     public static final RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
     public static void init() throws Exception{
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalTime now = LocalTime.now();
-        final JDA bot = JDABuilder.createLight("TOKEN", Collections.emptyList())
+        File token = new File("src/main//java/com/KingFightStudios/KFS_Bot/TOKEN.txt");
+        Scanner sc = new Scanner(token);
+        bot = JDABuilder.createLight(sc.next(), Collections.emptyList())
                 .addEventListeners(new Bot())
                 .setActivity(Activity.playing("seit " + dtf.format(now) + " Uhr"))
                 .enableIntents(GatewayIntent.GUILD_MEMBERS)
@@ -77,12 +82,10 @@ public class Bot extends ListenerAdapter {
     @Override
     public void onSlashCommand(SlashCommandEvent event) {
         if (event.getName().equals("uptime")) {
-            long uptime = runtimeMXBean.getUptime();
-            long uptimeInSeconds = uptime / 1000;
+            long uptimeInSeconds = getUptime() / 1000;
             long numberOfHours = uptimeInSeconds / (60 * 60);
             long numberOfMinutes = (uptimeInSeconds / 60) - (numberOfHours * 60);
             long numberOfSeconds = uptimeInSeconds % 60;
-
             event.replyFormat(
                      event.getGuild().getSelfMember().getNickname() + " ist online seit %s:%s:%s",
                     numberOfHours, numberOfMinutes, numberOfSeconds
@@ -138,5 +141,14 @@ public class Bot extends ListenerAdapter {
                 }
             });
         });
+    }
+
+    public void shutdown() {
+        bot.shutdown();
+    }
+
+    public long getUptime() {
+        long uptime = runtimeMXBean.getUptime();
+        return uptime;
     }
 }
