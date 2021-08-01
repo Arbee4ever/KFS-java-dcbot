@@ -119,7 +119,7 @@ public class Gui extends JFrame {
 
     public void members(java.util.List<Member> m) {
         membersHolder.removeAll();
-        for(int i = 0; i < 2; i++) {
+        for(int i = 0; i < m.size(); i++) {
             String[] memberInfo = new String[m.size()];
             memberInfo[0] = m.get(i).getUser().getName();
             memberInfo[1] = m.get(i).getUser().getId();
