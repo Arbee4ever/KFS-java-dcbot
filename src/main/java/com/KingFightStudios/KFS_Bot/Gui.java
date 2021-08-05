@@ -1,18 +1,23 @@
 package com.KingFightStudios.KFS_Bot;
 
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.util.concurrent.CompletableFuture;
 
 public class Gui extends JFrame {
     private final Image image = getToolkit().getImage("src/main/resources/icon.png");
@@ -119,14 +124,25 @@ public class Gui extends JFrame {
 
     public void members(java.util.List<Member> m) {
         membersHolder.removeAll();
-        for(int i = 0; i < m.size(); i++) {
-            String[] memberInfo = new String[m.size()];
-            memberInfo[0] = m.get(i).getUser().getName();
-            memberInfo[1] = m.get(i).getUser().getId();
-            memberInfo[2] = m.get(i).getUser().AVATAR_URL;
-            JComboBox<String> member = new JComboBox<>(memberInfo);
-            membersHolder.add(member);
-        }
+        new Thread(() -> {
+            for(int i = 0; i < m.size(); i++) {
+                try {
+                    String[] memberInfo = new String[m.size()];
+                    memberInfo[0] = m.get(i).getUser().getName();
+                    memberInfo[1] = m.get(i).getUser().getId();
+                    memberInfo[2] = m.get(i).getUser().getAvatarUrl();
+                    JComboBox<String> member = new JComboBox<>(memberInfo);
+                    URL url = new URL(m.get(i).getUser().getAvatarUrl());
+                    URLConnection conn = url.openConnection();
+                    InputStream in = conn.getInputStream();
+                    BufferedImage UserIcon = ImageIO.read(in);
+                    membersHolder.add(member);
+                    membersHolder.getGraphics().drawImage(UserIcon, i*128, 128, this);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public void startBot() throws Exception {
