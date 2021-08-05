@@ -64,53 +64,54 @@ public class Bot extends ListenerAdapter {
         guild.upsertCommand(new CommandData("news", "Sende eine Nachricht in #news.")
                 .addOption(OptionType.STRING, "nachricht", "Die Nachricht die gesendet werden soll.", true)
                 .setDefaultEnabled(false)
-        ).flatMap(command -> command.updatePrivileges(guild, CommandPrivilege.enableRole("705831662734540857"))).queue();;
+        ).flatMap(command -> command.updatePrivileges(guild, CommandPrivilege.enableRole("705831662734540857"))).queue();
         guild.upsertCommand(new CommandData("abstimmung", "Erstelle eine Abstimmung.")
                 .addOption(OptionType.STRING, "abstimmung", "Die Frage die gestellt werden soll.", true)
                 .addOption(OptionType.INTEGER, "anzahl", "Die Anzahl an Antwortmöglichkeiten.", true)
                 .setDefaultEnabled(false)
-        ).flatMap(command -> command.updatePrivileges(guild, CommandPrivilege.enableRole("705831662734540857"))).queue();;
+        ).flatMap(command -> command.updatePrivileges(guild, CommandPrivilege.enableRole("705831662734540857"))).queue();
         guild.upsertCommand(new CommandData("meeting", "Erstelle ein Meeting.")
                 .addOption(OptionType.INTEGER, "zeit", "Die Uhrzeit des Meetings.", true)
                 .setDefaultEnabled(false)
-        ).flatMap(command -> command.updatePrivileges(guild, CommandPrivilege.enableRole("705831662734540857"))).queue();;
+        ).flatMap(command -> command.updatePrivileges(guild, CommandPrivilege.enableRole("705831662734540857"))).queue();
         guild.upsertCommand(new CommandData("restart", "Starte den Bot neu.")
                 .setDefaultEnabled(false)
-        ).flatMap(command -> command.updatePrivileges(guild, CommandPrivilege.enableRole("705831662734540857"))).queue();;
+        ).flatMap(command -> command.updatePrivileges(guild, CommandPrivilege.enableRole("705831662734540857"))).queue();
     }
 
     @Override
     public void onSlashCommand(SlashCommandEvent event) {
-        if (event.getName().equals("uptime")) {
-            long uptimeInSeconds = getUptime() / 1000;
-            long numberOfHours = uptimeInSeconds / (60 * 60);
-            long numberOfMinutes = (uptimeInSeconds / 60) - (numberOfHours * 60);
-            long numberOfSeconds = uptimeInSeconds % 60;
-            event.replyFormat(
-                     event.getGuild().getSelfMember().getNickname() + " ist online seit %s:%s:%s",
-                    numberOfHours, numberOfMinutes, numberOfSeconds
-            ).setEphemeral(true).queue();
-        }
-        else if (event.getName().equals("ping")) {
-            long time = System.currentTimeMillis();
-            event.reply("Pong!").setEphemeral(true)
-                    .flatMap(v ->
-                            event.getHook().editOriginalFormat("Pong: %d ms", System.currentTimeMillis() - time)
-                    ).queue();
-        } else if (event.getName().equals("clear")) {
-            MessageChannel channel = event.getChannel();
-            int amount = (int)event.getOption("anzahl").getAsLong();
-            List<Message> messages = event.getChannel().getHistory().retrievePast(amount).complete();
-            channel.purgeMessages(messages);
-            event.reply(amount + " Nachrichten gelöscht.").setEphemeral(true).queue();
-        } else if (event.getName().equals("news")) {
-            event.reply("WIP").setEphemeral(true).queue();
-        } else if (event.getName().equals("abstimmung")) {
-            event.reply("WIP").setEphemeral(true).queue();
-        } else if (event.getName().equals("meeting")) {
-            event.reply("WIP").setEphemeral(true).queue();
-        } else if (event.getName().equals("restart")) {
-            event.reply("Ne... lass ma").setEphemeral(true).queue();
+        switch (event.getName()) {
+            case "uptime":
+                long uptimeInSeconds = getUptime() / 1000;
+                long numberOfHours = uptimeInSeconds / (60 * 60);
+                long numberOfMinutes = (uptimeInSeconds / 60) - (numberOfHours * 60);
+                long numberOfSeconds = uptimeInSeconds % 60;
+                event.replyFormat(
+                        event.getGuild().getSelfMember().getEffectiveName() + " ist online seit %s:%s:%s",
+                        numberOfHours, numberOfMinutes, numberOfSeconds
+                ).setEphemeral(true).queue();
+            case "ping":
+                long time = System.currentTimeMillis();
+                event.reply("Pong!").setEphemeral(true)
+                        .flatMap(v ->
+                                event.getHook().editOriginalFormat("Pong: %d ms", System.currentTimeMillis() - time)
+                        ).queue();
+            case "clear":
+                MessageChannel channel = event.getChannel();
+                int amount = (int)event.getOption("anzahl").getAsLong();
+                List<Message> messages = event.getChannel().getHistory().retrievePast(amount).complete();
+                channel.purgeMessages(messages);
+                event.reply(amount + " Nachrichten gelöscht.").setEphemeral(true).queue();
+            case "news":
+                event.getGuild().getTextChannelsByName("news", true).get(0).sendMessage(event.getOption("nachricht").getAsString()).queue();
+                event.reply("Nachricht `" + event.getOption("nachricht").getAsString() + "` in `#news` gesendet." ).setEphemeral(true).queue();
+            case "abstimmung":
+                event.reply("WIP").setEphemeral(true).queue();
+            case "meeting":
+                event.reply("WIP").setEphemeral(true).queue();
+            case "restart":
+                event.reply("Ne... lass ma").setEphemeral(true).queue();
             /*try {
                 Runtime.getRuntime().exec("shutdown -r -t 1");
             } catch (Exception e) {
@@ -122,24 +123,14 @@ public class Bot extends ListenerAdapter {
     @Override
     public void onReady(ReadyEvent event) {
         event.getJDA().getGuildById("705831662734540850").loadMembers().onSuccess(members -> {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    Main.gui.members(members);
-                }
-            });
+            Main.gui.members(members);
         });
     }
 
     @Override
     public void onGenericUser(GenericUserEvent event) {
         event.getJDA().getGuildById("705831662734540850").loadMembers().onSuccess(members -> {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    Main.gui.members(members);
-                }
-            });
+            Main.gui.members(members);
         });
     }
 
@@ -148,7 +139,6 @@ public class Bot extends ListenerAdapter {
     }
 
     public long getUptime() {
-        long uptime = runtimeMXBean.getUptime();
-        return uptime;
+        return runtimeMXBean.getUptime();
     }
 }
