@@ -1,9 +1,5 @@
 /logs/
 /src/main/java/com/KingFightStudios/KFS_Bot/TOKEN.txt
-/settings.gradle
-/gradlew.bat
-/gradlew
-/build.gradle
 /gradle/
 /build/
 /.idea/
