@@ -115,7 +115,7 @@ public class Bot extends ListenerAdapter {
             /*try {
                 Runtime.getRuntime().exec("shutdown -r -t 1");
             } catch (Exception e) {
-                e.printStackTrace();
+                e.printStackTrace()
             }*/
         }
     }
