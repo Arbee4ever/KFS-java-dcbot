@@ -1,8 +1,6 @@
-# Project exclude paths
-/.gradle/
-/build/
-/build/classes/java/main/
 /logs/
-/gradle/
-/.idea/
 /src/main/java/com/KingFightStudios/KFS_Bot/TOKEN.txt
+/gradle/
+/build/
+/.idea/
+/.gradle/
