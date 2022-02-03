@@ -112,11 +112,11 @@ public class Bot extends ListenerAdapter {
                 event.reply("WIP").setEphemeral(true).queue();
             case "restart":
                 event.reply("Ne... lass ma").setEphemeral(true).queue();
-            /*try {
-                Runtime.getRuntime().exec("shutdown -r -t 1");
-            } catch (Exception e) {
-                e.printStackTrace()
-            }*/
+                /*try {
+                    Runtime.getRuntime().exec("shutdown -r -t 1");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }*/
         }
     }
 
